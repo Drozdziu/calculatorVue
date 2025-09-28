@@ -25,20 +25,20 @@ export default {
 </script>
 
 <template>
-  <div class="container">
-    <DisplayComponent :calculations="{ digit: digit, refresh: refreshDisplay }" />
-    <KeyBoard @digitEvent="digitEvent" />
+  <div class="container col-10 col-sm-8 col-md-6 col-lg-3">
+    <DisplayComponent class="col-12" :calculations="{ digit: digit, refresh: refreshDisplay }" />
+    <KeyBoard class="col-12" @digitEvent="digitEvent" />
   </div>
 </template>
 
-<style scoped>
+<style>
 .container {
   margin-left: auto;
   margin-right: auto;
   margin-top: 10%;
   padding: 10px;
-  background-color: black;
-  max-width: 500px;
+  background-color: rgb(27, 27, 29);
+  min-width:400px;
   border: 5px solid black;
   border-radius: 10px;
 }

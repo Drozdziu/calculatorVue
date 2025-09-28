@@ -6,7 +6,7 @@ export default {
   },
   data() {
     return {
-      signs: ['+', '-', '/', '*', '.', 'X', 'C']
+      signs: ['+', '-', '/', '*', '(', ')', '.', 'X', 'C']
     }
   },
   methods: {
@@ -41,11 +41,13 @@ main {
 #equal {
   background-color: rgb(209, 102, 15);
   color: white;
+  box-shadow: 0px 10px 0px rgb(160, 82, 18);
 }
 
 #equal:hover {
   background-color: white;
   color: rgb(209, 102, 15);
+  box-shadow: 0px 10px 0px rgb(189, 184, 181);
 }
 
 .signs {
@@ -56,6 +58,7 @@ main {
 .signs:hover {
   background-color: rgb(209, 102, 15);
   color: rgb(91, 91, 94);
+  box-shadow: 0px 10px 0px rgb(138, 71, 17);
 }
 
 .digits {
@@ -64,8 +67,14 @@ main {
 }
 
 .digits:hover {
-  background-color: rgb(46, 221, 11);
-  color: rgb(91, 91, 94);
+    background-color: rgb(46, 221, 11);
+    color: rgb(91, 91, 94);
+    box-shadow: 0px 10px 0px rgb(43, 153, 21);
+}
+
+.digits:active, .signs:active, #equal:active{
+  margin-bottom: 5px;
+  box-shadow: 0px 5px 0px;
 }
 
 .keyboard {
@@ -73,7 +82,12 @@ main {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(4, 1fr);
   gap: 1px;
-  border: 2px solid black;
   border-radius: 10px;
+}
+.keyboard > :last-child  {
+  grid-column: 2/ 2; 
+}
+.keyboard #equal  {
+  grid-column: 1 / -1; 
 }
 </style>

@@ -18,12 +18,20 @@ button {
     padding: 10px;
     font-weight: 900;
     font-size: 30px;
-    transition: 200ms;
-    border: 1px solid white;
+    transition: 100ms;
+    border-width: 0px;
+    box-shadow: 0px 10px 0px rgb(75, 75, 80);
 }
-
-button:hover {
-    background-color: rgb(46, 221, 11);
-    color: rgb(91, 91, 94);
-}
+/* button::after{
+    position: absolute;
+    content: '';
+    background: rgb(75, 75, 80);
+    height: 20px;
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: -5px;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+} */
 </style>
