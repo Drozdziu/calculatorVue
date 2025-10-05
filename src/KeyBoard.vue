@@ -39,36 +39,36 @@ main {
 }
 
 #equal {
-  background-color: rgb(209, 102, 15);
+  background-color: var(--signFont-color);
   color: white;
   box-shadow: 0px 10px 0px rgb(160, 82, 18);
 }
 
 #equal:hover {
   background-color: white;
-  color: rgb(209, 102, 15);
+  color: var(--signFont-color);
   box-shadow: 0px 10px 0px rgb(189, 184, 181);
 }
 
 .signs {
-  background-color: rgb(91, 91, 94);
-  color: rgb(209, 102, 15);
+  background-color: var(--buttonBG-color);
+  color: var(--signFont-color);
 }
 
 .signs:hover {
-  background-color: rgb(209, 102, 15);
-  color: rgb(91, 91, 94);
+  background-color: var(--signFont-color);
+  color: var(--buttonBG-color);
   box-shadow: 0px 10px 0px rgb(138, 71, 17);
 }
 
 .digits {
-  background-color: rgb(91, 91, 94);
-  color: rgb(46, 221, 11);
+  background-color: var(--buttonBG-color);
+  color: var(--digitFont-color);
 }
 
 .digits:hover {
-    background-color: rgb(46, 221, 11);
-    color: rgb(91, 91, 94);
+    background-color: var(--digitFont-color);
+    color: var(--buttonBG-color);
     box-shadow: 0px 10px 0px rgb(43, 153, 21);
 }
 

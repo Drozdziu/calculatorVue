@@ -16,7 +16,8 @@ export default {
             zeroLimit: 0, // 0 - limit, 1 - bez limitu, 2 - zakaz
             openBracket: 0,
             closeBracket: 0,
-            signs: ['+', '-', '/', '*', '.', '(']
+            signs: ['+', '-', '/', '*', '.', '('],
+            alert: ''
         }
     },
     methods: {
@@ -27,7 +28,14 @@ export default {
             })
             return bool;
         },
-        write(str: string){
+        checkDot(sign: string) {
+            for (let i of sign) {
+                if (i === '.') return true;
+                if (i === '+' || i === '-' || i === '/' || i === '*') return false;
+            }
+            return false;
+        },
+        write(str: string) {
             this.calculateString += str;
             this.isSign = false;
         }
@@ -38,39 +46,48 @@ export default {
             switch (newCalculate.digit) {
                 case '=':
                     if (this.openBracket == this.closeBracket) {
-                        this.result = eval(this.calculateString);
-                        this.calculateString = this.result.toFixed(2).toString();
-                        this.isDot = true;
-                        this.openBracket = 0;
-                        this.closeBracket = 0;
-                        this.zeroLimit = 1;
-                    }
+                        try {
+                            this.result = eval(this.calculateString);
+                            this.calculateString = this.result.toFixed(2).toString();
+                            this.isDot = true;
+                            this.openBracket = 0;
+                            this.closeBracket = 0;
+                            this.zeroLimit = 1;
+                        } catch (e) {
+                            this.alert = 'Something is wrong'
+                        }
+                    }else this.alert = 'Something is wrong'
                     break;
                 case 'C':
                     this.calculateString = '';
                     this.isDot = false;
                     this.isSign = true;
                     this.zeroLimit = 0;
+                    this.openBracket = 0;
+                    this.closeBracket = 0;
+                    this.alert = '';
                     break;
                 case 'X':
-                    if (lastSign === '.'){
+                    this.isDot = this.checkDot(this.calculateString.split('').reverse().join('').substring(1));
+                    if (!this.checkSign(lastSign)) {
+                        this.isSign = false;
+                    }
+                    if (lastSign === '.') {
                         this.isDot = false;
                         this.zeroLimit = 0;
-                    } 
-                    if (!this.checkSign(lastSign)){
-                        this.isSign = false;
-                    } 
+                    }
                     this.calculateString = this.calculateString.slice(0, -1);
                     break;
                 case '(':
                     this.openBracket++;
+                    console.log(this.openBracket, this.closeBracket)
                     this.write(newCalculate.digit)
                     break;
                 case ')':
-                    if (!this.checkSign(lastSign)) {
+                    if (!this.checkSign(lastSign) && this.openBracket > this.closeBracket) {
                         this.closeBracket++;
                         this.write(newCalculate.digit)
-                    }
+                    } else this.alert = `Close brackets cannot be more than open brackets!`;
                     break;
                 case '+':
                 case '-':
@@ -81,7 +98,7 @@ export default {
                         this.isSign = true;
                         this.isDot = false;
                         this.zeroLimit = 0;
-                    }
+                    } else this.alert = `You cannot write ${newCalculate.digit} here!`
                     break;
                 case '.':
                     if (!this.isDot && this.calculateString != '' && !this.checkSign(lastSign)) {
@@ -89,23 +106,26 @@ export default {
                         this.isDot = true;
                         this.isSign = true;
                         this.zeroLimit = 1;
-                    }
+                    } else this.alert = `You cannot write ${newCalculate.digit} here!`
                     break;
                 default:
-                    if (newCalculate.digit === '0'){ 
-                        if(this.zeroLimit == 0){
+                    if (newCalculate.digit === '0') {
+                        if (this.zeroLimit == 0) {
                             this.zeroLimit = 2;
                             this.write(newCalculate.digit)
                         }
-                        else if(this.zeroLimit == 1) this.write(newCalculate.digit)
+                        else if (this.zeroLimit == 1) this.write(newCalculate.digit)
                     }
-                    if (newCalculate.digit !== '0'){
+                    if (newCalculate.digit !== '0') {
                         this.zeroLimit = 1;
-                        if(this.calculateString.length == 1 && this.calculateString == '0') this.calculateString = newCalculate.digit
+                        if (this.calculateString.length == 1 && this.calculateString == '0') this.calculateString = newCalculate.digit
                         else this.write(newCalculate.digit)
                     }
                     break;
             }
+        },
+        alert() {
+            this.$emit('alertEvent', this.alert);
         }
     }
 }
@@ -121,9 +141,9 @@ h1 {
     min-height: 50px;
     font-weight: 900;
     border-radius: 10px;
-    background-color: rgb(91, 91, 94);
+    background-color: var(--buttonBG-color);
     color: black;
     text-align: center;
-    box-shadow: 0px 5px 0px rgb(75, 75, 80);
+    box-shadow: 0px 5px 0px var(--buttonShadowColor);
 }
 </style>
