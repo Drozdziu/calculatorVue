@@ -17,14 +17,14 @@ export default {
             openBracket: 0,
             closeBracket: 0,
             signs: ['+', '-', '/', '*', '.', '('],
-            alert: ''
+            alert: '',                      
         }
     },
     methods: {
         checkSign(sign: string) {
             let bool = false;
             this.signs.forEach((i) => {
-                if (sign === i && sign !== '-') bool = true;
+                if (sign === i) bool = true;
             })
             return bool;
         },
@@ -38,6 +38,10 @@ export default {
         write(str: string) {
             this.calculateString += str;
             this.isSign = false;
+            if(this.alert != ''){
+                this.alert = this.alert.replace(this.alert, '');
+                this.calculateString = this.calculateString.slice(0, -1);
+            }
         }
     },
     watch: {
@@ -45,7 +49,7 @@ export default {
             let lastSign = this.calculateString.charAt(this.calculateString.length - 1)
             switch (newCalculate.digit) {
                 case '=':
-                    if (this.openBracket == this.closeBracket) {
+                    if (this.openBracket == this.closeBracket && !this.calculateString.includes('/0')) {
                         try {
                             this.result = eval(this.calculateString);
                             this.calculateString = this.result.toFixed(2).toString();
@@ -53,8 +57,10 @@ export default {
                             this.openBracket = 0;
                             this.closeBracket = 0;
                             this.zeroLimit = 1;
+                            this.alert = '';
                         } catch (e) {
                             this.alert = 'Something is wrong'
+                            console.error(e);
                         }
                     }else this.alert = 'Something is wrong'
                     break;
@@ -69,7 +75,8 @@ export default {
                     break;
                 case 'X':
                     this.isDot = this.checkDot(this.calculateString.split('').reverse().join('').substring(1));
-                    if (!this.checkSign(lastSign)) {
+                    if (this.checkSign(lastSign)) {
+                        console.log(lastSign)
                         this.isSign = false;
                     }
                     if (lastSign === '.') {
@@ -79,15 +86,17 @@ export default {
                     this.calculateString = this.calculateString.slice(0, -1);
                     break;
                 case '(':
-                    this.openBracket++;
-                    console.log(this.openBracket, this.closeBracket)
-                    this.write(newCalculate.digit)
+                    if(this.checkSign(lastSign) || this.calculateString == ''){
+                        this.openBracket++;
+                        console.log(this.openBracket, this.closeBracket)
+                        this.write(newCalculate.digit)
+                    } else this.alert = `You cannot open bracket here!`;
                     break;
                 case ')':
                     if (!this.checkSign(lastSign) && this.openBracket > this.closeBracket) {
                         this.closeBracket++;
                         this.write(newCalculate.digit)
-                    } else this.alert = `Close brackets cannot be more than open brackets!`;
+                    }else this.alert = `Close brackets cannot be more than open brackets!`;
                     break;
                 case '+':
                 case '-':
@@ -108,6 +117,13 @@ export default {
                         this.zeroLimit = 1;
                     } else this.alert = `You cannot write ${newCalculate.digit} here!`
                     break;
+                case '+/-':
+                    if(this.checkSign(lastSign) || this.calculateString == ''){
+                        this.write('(-');
+                        this.openBracket++;
+                        this.isSign = true;
+                    }else this.alert =  `You cannot write (- here!`
+                    break;
                 default:
                     if (newCalculate.digit === '0') {
                         if (this.zeroLimit == 0) {
@@ -115,7 +131,7 @@ export default {
                             this.write(newCalculate.digit)
                         }
                         else if (this.zeroLimit == 1) this.write(newCalculate.digit)
-                    }
+                    } 
                     if (newCalculate.digit !== '0') {
                         this.zeroLimit = 1;
                         if (this.calculateString.length == 1 && this.calculateString == '0') this.calculateString = newCalculate.digit
