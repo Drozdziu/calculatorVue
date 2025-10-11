@@ -6,7 +6,7 @@ export default {
   },
   data() {
     return {
-      signs: ['+', '-', '/', '*', '(', ')', 'X', 'C']
+      signs: ['+', '-', '/', '*', '(', ')', '√', 'X', 'C']
     }
   },
   methods: {
@@ -27,10 +27,9 @@ export default {
     </div>
     <div class="keyboard">
       <DigitComponent class="signs" v-for="i in signs" :sign="i" @click="sendDigit(i)" />
-      <DigitComponent id="equal" sign="=" @click="sendDigit('=')" />
+      <DigitComponent id="equal" sign="=" @click="sendDigit('=')" /> 
     </div>
   </main>
-
 </template>
 
 <style scoped>
@@ -85,5 +84,8 @@ main {
   grid-template-rows: repeat(4, 1fr);
   gap: 1px;
   border-radius: 10px;
+}
+.keyboard #equal  {
+  grid-column: 1 / -1; 
 }
 </style>
