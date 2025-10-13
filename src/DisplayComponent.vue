@@ -12,9 +12,8 @@ export default {
             calculateString: '',
             result: 0,
             isMinus: false,
+            isDot: false,
             zeroLimit: 0, // 0 - limit, 1 - bez limitu, 2 - zakaz
-            openBracket: 0,
-            closeBracket: 0,
             signs: ['+', '-', '/', '*', '.', '('],
             alert: '',
         }
@@ -38,43 +37,49 @@ export default {
     watch: {
         calculations(newCalculate) {
             let lastSign = this.calculateString.charAt(this.calculateString.length - 1)
+            let openBracket = this.calculateString.split('(').length - 1;
+            let closeBracket = this.calculateString.split(')').length - 1;
             switch (newCalculate.digit) {
                 case '=':
-                    if (this.openBracket == this.closeBracket && !this.calculateString.includes('/0')) {
+                    if (!this.calculateString.includes('/0') && openBracket == closeBracket) {
                         try {
+                            this.calculateString = this.calculateString.replace(/√\(([^)]+)\)/g, 'Math.sqrt($1)')
                             this.result = eval(this.calculateString);
-                            this.calculateString = this.result.toFixed(2).toString();
-                            this.openBracket = 0;
-                            this.closeBracket = 0;
+                            if(Number.isInteger(this.result)){
+                                this.calculateString = this.result.toString();
+                                this.isDot = false;
+                            } 
+                            else{
+                                this.calculateString = parseFloat(this.result.toFixed(5).toString()).toString();
+                                this.isDot = true;
+                            } 
                             this.zeroLimit = 1;
                             this.alert = '';
+                            this.isMinus = false;
                         } catch (e) {
                             this.alert = 'Something is wrong' + e
                             console.error(e);
                         }
-                    } else this.alert = 'Something is wrong'
+                    } else{
+                        if(this.calculateString.includes('/0')) this.alert = 'You cannot divide by 0!';
+                        if(openBracket != closeBracket) this.alert = 'Some bracket is not closed!';
+                    } 
                     break;
                 case 'C':
                     this.calculateString = '';
                     this.zeroLimit = 0;
-                    this.openBracket = 0;
-                    this.closeBracket = 0;
                     this.alert = '';
                     break;
                 case 'X':
                     this.calculateString = this.calculateString.slice(0, -1);
                     break;
                 case '(':
-                    if (this.checkSign(lastSign) || this.calculateString == '') {
-                        this.openBracket++;
-                        this.write(newCalculate.digit)
-                    } else this.alert = `You cannot open bracket here!`;
+                    if (this.checkSign(lastSign) || this.calculateString == '') this.write(newCalculate.digit)
+                    else this.alert = `You cannot open bracket here!`;
                     break;
                 case ')':
-                    if (!this.checkSign(lastSign) && this.openBracket >= this.closeBracket) {
-                        this.closeBracket++;
-                        this.write(newCalculate.digit)
-                    } else this.alert = `Close brackets cannot be more than open brackets!`;
+                    if (!this.checkSign(lastSign) && openBracket > closeBracket) this.write(newCalculate.digit)
+                    else this.alert = `Close brackets cannot be more than open brackets!`;
                     break;
                 case '+':
                 case '-':
@@ -83,10 +88,12 @@ export default {
                     if (this.calculateString != '' && !this.checkSign(lastSign)) {
                         this.write(newCalculate.digit)
                         this.zeroLimit = 0;
+                        this.isDot = false;
+                        this.isMinus = false;
                     } else this.alert = `You cannot write ${newCalculate.digit} here!`
                     break;
                 case '.':
-                    if (this.calculateString != '' && !this.checkSign(lastSign)) {
+                    if (this.calculateString != '' && !this.checkSign(lastSign) && !this.isDot) {
                         this.write(newCalculate.digit)                  
                         this.zeroLimit = 1;
                     } else this.alert = `You cannot write ${newCalculate.digit} here!`
@@ -95,15 +102,12 @@ export default {
                     if ((this.checkSign(lastSign) || this.calculateString == '') && !this.isMinus) {
                         this.isMinus = true;
                         this.write('(-');
-                        this.openBracket++;
                     } else this.alert = `You cannot write (- here!`
                     break;
                 case '√':
-                    // if(this.checkSign(lastSign) || this.calculateString == ''){
-                    //     console.log(this.openBracket)
-                    //     // this.openBracket++;
-                    //     this.write("Math.sqrt(");
-                    // }
+                    if(this.checkSign(lastSign) || this.calculateString == ''){
+                        this.write("√(");
+                    }
                     break;
                 default:
                     if (newCalculate.digit === '0') {

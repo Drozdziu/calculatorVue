@@ -3,14 +3,12 @@ import KeyBoard from './KeyBoard.vue';
 import DisplayComponent from './DisplayComponent.vue';
 import DigitComponent from './DigitComponent.vue';
 import SwitchDarkLight from './SwitchDarkLight.vue';
-import AlertComponent from './AlertComponent.vue';
 export default {
   components: {
     KeyBoard,
     DisplayComponent,
     DigitComponent,
-    SwitchDarkLight,
-    AlertComponent
+    SwitchDarkLight
   },
   data() {
     return {
@@ -41,7 +39,7 @@ export default {
       <DisplayComponent class="col-12" @alertEvent="alertEvent" :calculations="{ digit: digit, refresh: refreshDisplay }" />
       <KeyBoard class="col-12" @digitEvent="digitEvent" />
     </div>
-    <AlertComponent :alert="alert"/>
+     <p id="alert">{{ alert }}</p>
   </main>
 </template>
 
@@ -66,5 +64,11 @@ main {
   top: 30%;
   margin-left: auto;
   margin-right: auto;
+}
+#alert{
+  font-weight: 900;
+    font-size: 50px;
+    color: var(--switchColor);
+    text-align: center;
 }
 </style>
