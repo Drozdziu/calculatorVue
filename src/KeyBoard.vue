@@ -23,7 +23,7 @@ export default {
       <DigitComponent class="digits" v-for="n in 9" :key="n" :digit="n" @click="sendDigit(n.toString())" />
       <DigitComponent class="digits" sign="." @click="sendDigit('.')" />
       <DigitComponent class="digits" :digit="0" @click="sendDigit('0')" />
-      <DigitComponent class="digits" sign="+/-" @click="sendDigit('+/-')" style="font-size: 20px;"/>
+      <DigitComponent class="digits" sign="+/-" @click="sendDigit('+/-')" style="font-size: 100%;"/>
     </div>
     <div class="keyboard">
       <DigitComponent class="signs" v-for="i in signs" :sign="i" @click="sendDigit(i)" />
