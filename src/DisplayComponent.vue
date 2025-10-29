@@ -72,7 +72,7 @@ export default {
                     this.isDot = false;
                     this.alert = '';
                     break;
-                case 'X':
+                case '⌫':
                     this.calculateString = this.calculateString.slice(0, -1);
                     break;
                 case '(':
